@@ -33,7 +33,7 @@ if not glfw.init():
     exit()
 
 # Create a windowed mode window and its OpenGL context
-window = glfw.create_window(640, 480, "Red Balls", None, None)
+window = glfw.create_window(1080, 1080, "Red Balls", None, None)
 if not window:
     glfw.terminate()
     exit()
@@ -62,9 +62,19 @@ while not glfw.window_should_close(window):
     x = float(0) 
     y = float(0)
     PINum = 3.14159265358979323846
-    radius = 0.2 * asp_ratio
-    triangleAmnt = int(100)
+    radius = 1/50
+    bRad = 1/45
+    triangleAmnt = int(1000)
     twicePi = float(2.0*PINum) # not multiplying results in half circle
+    glBegin(GL_TRIANGLE_FAN)
+    glColor3f(0.0, 0.0, 0.0) # black circle color
+    glVertex2f(x,y)
+    for i in range(triangleAmnt + 1):
+        glVertex2f(
+            x + (bRad * math.cos(i * twicePi / triangleAmnt)),
+            y + (bRad * math.sin(i * twicePi / triangleAmnt))
+        )
+    glEnd()
     glBegin(GL_TRIANGLE_FAN)
     glColor3f(0.807, 0.0, 0.0) # red circle color
     glVertex2f(x,y)
@@ -72,6 +82,28 @@ while not glfw.window_should_close(window):
         glVertex2f(
             x + (radius * math.cos(i * twicePi / triangleAmnt)),
             y + (radius * math.sin(i * twicePi / triangleAmnt))
+        )
+    glEnd()
+
+
+    a = float(0.2) 
+    b = float(0.2)
+    glBegin(GL_TRIANGLE_FAN)
+    glColor3f(0.0, 0.0, 0.0) # black circle color
+    glVertex2f(a,b)
+    for i in range(triangleAmnt + 1):
+        glVertex2f(
+            a + (bRad * math.cos(i * twicePi / triangleAmnt)),
+            b + (bRad * math.sin(i * twicePi / triangleAmnt))
+        )
+    glEnd()
+    glBegin(GL_TRIANGLE_FAN)
+    glColor3f(0.807, 0.0, 0.0) # red circle color
+    glVertex2f(a,b)
+    for i in range(triangleAmnt + 1):
+        glVertex2f(
+            a + (radius * math.cos(i * twicePi / triangleAmnt)),
+            b + (radius * math.sin(i * twicePi / triangleAmnt))
         )
     glEnd()
 
