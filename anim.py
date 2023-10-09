@@ -37,7 +37,7 @@ if not glfw.init():
     exit()
 
 # Create a windowed mode window and its OpenGL context
-window = glfw.create_window(1000, 1000, "Crowd", None, None)
+window = glfw.create_window(1000, 1000, "Anim", None, None)
 if not window:
     glfw.terminate()
     exit()
@@ -111,7 +111,8 @@ while not glfw.window_should_close(window):
             glVertex2f(x,y)
         glEnd()
 
-        glBegin(GL_LINES)
+        glLineWidth(2)
+        glBegin(GL_LINE_STRIP)
         glColor3f(0.0, 0.0, 0.0)
         for i in range(100):
             x = radius*cos(i*2*pi/sides)+xloc
