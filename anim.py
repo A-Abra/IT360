@@ -37,7 +37,7 @@ if not glfw.init():
     exit()
 
 # Create a windowed mode window and its OpenGL context
-window = glfw.create_window(1000, 1000, "Anim", None, None)
+window = glfw.create_window(500, 500, "Anim", None, None)
 if not window:
     glfw.terminate()
     exit()
@@ -51,7 +51,7 @@ glfw.set_key_callback(window, key_callback)
 
 x_nums = []
 y_nums = []
-for i in range(50):
+for i in range(2):
     x_num = random.uniform(-1,1)
     y_num = random.uniform(-1,1)
     x_nums.append(x_num)
@@ -78,7 +78,7 @@ while not glfw.window_should_close(window):
     glClearColor(0.870, 0.905, 0.937, 1.0)
     glClear(GL_COLOR_BUFFER_BIT)
 
-    for i in range(50):
+    for i in range(2):
         xloc = x_nums[i]
         yloc = y_nums[i]
 
@@ -97,12 +97,12 @@ while not glfw.window_should_close(window):
         x_nums[i] = xloc
         y_nums[i] = yloc
 
-    for i in range(50):
+    for i in range(2):
         xloc = x_nums[i]
         yloc = y_nums[i]
         sides = 32
         pi=3.14
-        radius = 1/50
+        radius = 1/25
         glBegin(GL_POLYGON)
         glColor3f(0.807, 0.0, 0.0)
         for i in range(100):
