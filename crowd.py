@@ -1,5 +1,7 @@
 import glfw
+from math import *
 from OpenGL.GL import *
+import random
 
 
 # Callback for mouse button events
@@ -35,8 +37,7 @@ if not glfw.init():
     exit()
 
 # Create a windowed mode window and its OpenGL context
-window = glfw.create_window(
-    640, 480, "White Square on Black Background", None, None)
+window = glfw.create_window(1000, 1000, "Crowd", None, None)
 if not window:
     glfw.terminate()
     exit()
@@ -48,20 +49,76 @@ glfw.make_context_current(window)
 glfw.set_mouse_button_callback(window, mouse_button_callback)
 glfw.set_key_callback(window, key_callback)
 
+x_nums = []
+y_nums = []
+for i in range(50):
+    x_num = random.uniform(-1,1)
+    y_num = random.uniform(-1,1)
+    x_nums.append(x_num)
+    y_nums.append(y_num)
+
+x_movs = []
+y_movs = []
+
+for i in range(50):
+    x_mov = random.uniform(-0.005, 0.005)
+    y_mov = random.uniform(-0.005, 0.005)
+    x_movs.append(x_mov)
+    y_movs.append(y_mov)
+
 # Main loop
 while not glfw.window_should_close(window):
     # Clear the screen with black color
-    glClearColor(0.0, 0.0, 0.0, 1.0)
+    # glClearColor(1.0, 1.0, 1.0, 1.0)
+
+    width, height = glfw.get_window_size(window)
+    glViewport(0, 0, width, height)
+
+    # Set color to lightly salted lays chips blue
+    glClearColor(0.870, 0.905, 0.937, 1.0)
     glClear(GL_COLOR_BUFFER_BIT)
 
-    # Draw a white square
-    glColor3f(1.0, 1.0, 1.0)  # Set color to white
-    glBegin(GL_QUADS)
-    glVertex2f(-0.5, -0.5)
-    glVertex2f(0.5, -0.5)
-    glVertex2f(0.5, 0.5)
-    glVertex2f(-0.5, 0.5)
-    glEnd()
+    for i in range(50):
+        xloc = x_nums[i]
+        yloc = y_nums[i]
+
+        xloc += x_movs[i]
+        yloc += y_movs[i]
+
+        if(xloc > 1):
+            xloc=-1
+        if(yloc > 1):
+            yloc=-1
+        if(xloc < -1):
+            xloc=1
+        if(yloc < -1):
+            yloc=1    
+
+        x_nums[i] = xloc
+        y_nums[i] = yloc
+
+    for i in range(50):
+        xloc = x_nums[i]
+        yloc = y_nums[i]
+        sides = 32
+        pi=3.14
+        radius = 1/50
+        glBegin(GL_POLYGON)
+        glColor3f(0.807, 0.0, 0.0)
+        for i in range(100):
+            x = radius*cos(i*2*pi/sides)+xloc
+            y = radius*sin(i*2*pi/sides)+yloc
+            glVertex2f(x,y)
+        glEnd()
+
+        glLineWidth(2)
+        glBegin(GL_LINE_STRIP)
+        glColor3f(0.0, 0.0, 0.0)
+        for i in range(100):
+            x = radius*cos(i*2*pi/sides)+xloc
+            y = radius*sin(i*2*pi/sides)+yloc
+            glVertex2f(x,y)
+        glEnd()
 
     # Swap front and back buffers
     glfw.swap_buffers(window)
