@@ -1,6 +1,7 @@
 import glfw
-import math
+from math import *
 from OpenGL.GL import *
+import random
 
 
 # Callback for mouse button events
@@ -36,7 +37,7 @@ if not glfw.init():
     exit()
 
 # Create a windowed mode window and its OpenGL context
-window = glfw.create_window(1000, 1000, "Red Balls", None, None)
+window = glfw.create_window(1000, 1000, "Two Circles", None, None)
 if not window:
     glfw.terminate()
     exit()
@@ -47,6 +48,14 @@ glfw.make_context_current(window)
 # Set callbacks
 glfw.set_mouse_button_callback(window, mouse_button_callback)
 glfw.set_key_callback(window, key_callback)
+
+x_nums = []
+y_nums = []
+for i in range(50):
+    x_num = random.uniform(-1,1)
+    y_num = random.uniform(-1,1)
+    x_nums.append(x_num)
+    y_nums.append(y_num)
 
 # Main loop
 while not glfw.window_should_close(window):
@@ -60,64 +69,28 @@ while not glfw.window_should_close(window):
     glClearColor(0.870, 0.905, 0.937, 1.0)
     glClear(GL_COLOR_BUFFER_BIT)
 
-    asp_ratio = width / height  # tried to fix circle size with ratio
+    for i in range(2):
+        xloc = x_nums[i]
+        yloc = y_nums[i]
+        sides = 32
+        pi=3.14
+        radius = 1/50
+        glBegin(GL_POLYGON)
+        glColor3f(0.807, 0.0, 0.0)
+        for i in range(100):
+            x = radius*cos(i*2*pi/sides)+xloc
+            y = radius*sin(i*2*pi/sides)+yloc
+            glVertex2f(x,y)
+        glEnd()
 
-    # Draw a circle radius 1
-    x = float(0)
-    y = float(0)
-    PINum = 3.14159265358979323846
-    radius = 1/50
-    bRad = 1/45
-    triangleAmnt = int(1000)
-    twicePi = float(2.0*PINum)  # not multiplying results in half circle
-    glBegin(GL_TRIANGLE_FAN)
-    glColor3f(0.0, 0.0, 0.0)  # black circle color
-    glVertex2f(x, y)
-    for i in range(triangleAmnt + 1):
-        glVertex2f(
-            x + (bRad * math.cos(i * twicePi / triangleAmnt)),
-            y + (bRad * math.sin(i * twicePi / triangleAmnt))
-        )
-    glEnd()
-    glBegin(GL_TRIANGLE_FAN)
-    glColor3f(0.807, 0.0, 0.0)  # red circle color
-    glVertex2f(x, y)
-    for i in range(triangleAmnt + 1):
-        glVertex2f(
-            x + (radius * math.cos(i * twicePi / triangleAmnt)),
-            y + (radius * math.sin(i * twicePi / triangleAmnt))
-        )
-    glEnd()
-
-    a = float(0.2)
-    b = float(0.2)
-    glBegin(GL_TRIANGLE_FAN)
-    glColor3f(0.0, 0.0, 0.0)  # black circle color
-    glVertex2f(a, b)
-    for i in range(triangleAmnt + 1):
-        glVertex2f(
-            a + (bRad * math.cos(i * twicePi / triangleAmnt)),
-            b + (bRad * math.sin(i * twicePi / triangleAmnt))
-        )
-    glEnd()
-    glBegin(GL_TRIANGLE_FAN)
-    glColor3f(0.807, 0.0, 0.0)  # red circle color
-    glVertex2f(a, b)
-    for i in range(triangleAmnt + 1):
-        glVertex2f(
-            a + (radius * math.cos(i * twicePi / triangleAmnt)),
-            b + (radius * math.sin(i * twicePi / triangleAmnt))
-        )
-    glEnd()
-
-    # Draw a white square
-    # glColor3f(1.0, 1.0, 1.0)  # Set color to white
-    # glBegin(GL_QUADS)
-    # glVertex2f(-0.5, -0.5)
-    # glVertex2f(0.5, -0.5)
-    # glVertex2f(0.5, 0.5)
-    # glVertex2f(-0.5, 0.5)
-    # glEnd()
+        glLineWidth(2)
+        glBegin(GL_LINE_STRIP)
+        glColor3f(0.0, 0.0, 0.0)
+        for i in range(100):
+            x = radius*cos(i*2*pi/sides)+xloc
+            y = radius*sin(i*2*pi/sides)+yloc
+            glVertex2f(x,y)
+        glEnd()
 
     # Swap front and back buffers
     glfw.swap_buffers(window)
