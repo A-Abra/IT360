@@ -89,6 +89,10 @@ while not glfw.window_should_close(window):
             xloc=-1
         if(yloc > 1):
             yloc=-1
+        if(xloc < -1):
+            xloc=1
+        if(yloc < -1):
+            yloc=1    
 
         x_nums[i] = xloc
         y_nums[i] = yloc
