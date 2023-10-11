@@ -1,46 +1,43 @@
 import glfw
 from math import *
 from OpenGL.GL import *
+import random
 
-def distance(x1, y1, x2, y2, width, height):
-    # Normalize the coordinates to the range [-1, 1]
-    normalized_x1 = (2 * x1 / width) - 1
-    normalized_y1 = 1 - (2 * y1 / height)
-    normalized_x2 = (2 * x2 / width) - 1
-    normalized_y2 = 1 - (2 * y2 / height)
+def normalize(x,y):
+    normalizedX = -1.0 + 2.0 * x / 1000; 
+    normalizedY = 1.0 - 2.0 * y / 1000; 
+    return normalizedX,normalizedY
 
-    return sqrt((normalized_x1 - normalized_x2)**2 + (normalized_y1 - normalized_y2)**2)
+def move(x,y,index):
+    upd_x, upd_y = glfw.get_cursor_pos(window)
+    upd_x, upd_y = normalize(upd_x, upd_y)
+    x_nums[index] = upd_x
+    y_nums[index] = upd_y
 
-def isInCircle(circle_x, circle_y, ray_start_x, ray_start_y, circle_radius):
-    dx = circle_x - ray_start_x
-    dy = circle_y - ray_start_y
-    distance = dx * dx + dy * dy
-    if distance <= circle_radius * circle_radius:
-        return True
-    else:
-        return False
 
 # Callback for mouse button events
 def mouse_button_callback(window, button, action, mods):
     x, y = glfw.get_cursor_pos(window)
-
-    distance_to_circleR = distance(x, y, circleR_x, circleR_y, 1000, 1000)
-    distance_to_circleB = distance(x, y, circleB_x, circleB_y, 1000, 1000)
-
     if button == glfw.MOUSE_BUTTON_LEFT and action == glfw.PRESS:
-        print(x, y)
-        print("Left mouse button pressed!")
-        print(str(distance_to_circleB) + " BLK DIST")
-        print(str(distance_to_circleR) + " RED DIST")
-
-        if isInCircle(circleR_x, circleR_y, x, y, 0.047):
-            print("Mouse is within the red circle!")
-
-        # Check if the mouse is within the black circle
-        if isInCircle(circleB_x, circleB_y, x, y, 0.05):
-            print("Mouse is within the black circle!")
+        x_new, y_new = normalize(x,y)
+        for pos in range(2):
+            distance = sqrt(((x_new-x_nums[pos])*(x_new-x_nums[pos]))+((y_new-y_nums[pos])*(y_new-y_nums[pos])))
+            if(distance<=0.02):
+                flag[0] = 1
+                flag[1] = pos
+                print(flag[0])
+    elif button == glfw.MOUSE_BUTTON_LEFT and action == glfw.RELEASE:
+        print(flag[0])
+        flag[0]=0
+        print(flag[0])
+    elif button == glfw.MOUSE_BUTTON_RIGHT and action == glfw.PRESS:
+        print("Right mouse button pressed!")
+    elif button == glfw.MOUSE_BUTTON_RIGHT and action == glfw.RELEASE:
+        print("Right mouse button released!")
 
 # Callback for keyboard events
+
+
 def key_callback(window, key, scancode, action, mods):
     if action == glfw.PRESS:
         if key == glfw.KEY_ESCAPE:
@@ -50,6 +47,8 @@ def key_callback(window, key, scancode, action, mods):
             print("A key pressed!")
         elif key == glfw.KEY_B:
             print("B key pressed!")
+        # ... add more keys as needed
+
 
 # Initialize the library
 if not glfw.init():
@@ -68,40 +67,55 @@ glfw.make_context_current(window)
 glfw.set_mouse_button_callback(window, mouse_button_callback)
 glfw.set_key_callback(window, key_callback)
 
-# Initial positions of the two circles
-circleR_x, circleR_y = 0.2, 0.2
-circleB_x, circleB_y = 0.2, 0.2
+x_nums = []
+y_nums = []
+flag = [0, 0]
+for i in range(2):
+    x_num = random.uniform(-1,1)
+    y_num = random.uniform(-1,1)
+    x_nums.append(x_num)
+    y_nums.append(y_num)
 
 # Main loop
 while not glfw.window_should_close(window):
-    # Clear the screen with a light blue color
+    # Clear the screen with black color
+    # glClearColor(1.0, 1.0, 1.0, 1.0)
+
+    width, height = glfw.get_window_size(window)
+    glViewport(0, 0, width, height)
+
+    # Set color to lightly salted lays chips blue
     glClearColor(0.870, 0.905, 0.937, 1.0)
     glClear(GL_COLOR_BUFFER_BIT)
-
     
-    sides = 32
-    radius = 0.05
+    if(flag[0]==1):
+            print("Made it")
+            x,y = glfw.get_cursor_pos(window)
+            x,y = normalize(x,y)
+            move(x,y, flag[1])
 
-    # Draw black first
-    glBegin(GL_POLYGON)
-    glColor3f(0.0, 0.0, 0.0)
-    for i in range(sides):
-        angle = 2 * pi * i / sides
-        x = radius * cos(angle) + circleB_x
-        y = radius * sin(angle) + circleB_y
-        glVertex2f(x, y)
-    glEnd()
+    for i in range(2):
+        xloc = x_nums[i]
+        yloc = y_nums[i]
+        sides = 32
+        pi=3.14
+        radius = 1/50
+        glBegin(GL_POLYGON)
+        glColor3f(0.807, 0.0, 0.0)
+        for i in range(100):
+            x = radius*cos(i*2*pi/sides)+xloc
+            y = radius*sin(i*2*pi/sides)+yloc
+            glVertex2f(x,y)
+        glEnd()
 
-    # Draw red on top
-    radius = 0.047
-    glBegin(GL_POLYGON)
-    glColor3f(0.807, 0.0, 0.0)
-    for i in range(sides):
-        angle = 2 * pi * i / sides
-        x = radius * cos(angle) + circleR_x
-        y = radius * sin(angle) + circleR_y
-        glVertex2f(x, y)
-    glEnd()
+        glLineWidth(2)
+        glBegin(GL_LINE_STRIP)
+        glColor3f(0.0, 0.0, 0.0)
+        for i in range(100):
+            x = radius*cos(i*2*pi/sides)+xloc
+            y = radius*sin(i*2*pi/sides)+yloc
+            glVertex2f(x,y)
+        glEnd()
 
     # Swap front and back buffers
     glfw.swap_buffers(window)
