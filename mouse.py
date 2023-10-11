@@ -22,14 +22,13 @@ def mouse_button_callback(window, button, action, mods):
         x_new, y_new = normalize(x,y)
         for pos in range(2):
             distance = sqrt(((x_new-x_nums[pos])*(x_new-x_nums[pos]))+((y_new-y_nums[pos])*(y_new-y_nums[pos])))
-            if(distance<=0.02):
+            if(distance<=0.04):
                 flag[0] = 1
                 flag[1] = pos
-                print(flag[0])
+        print("Left mouse button pressed!")
     elif button == glfw.MOUSE_BUTTON_LEFT and action == glfw.RELEASE:
-        print(flag[0])
         flag[0]=0
-        print(flag[0])
+        print("Left mouse button released!")
     elif button == glfw.MOUSE_BUTTON_RIGHT and action == glfw.PRESS:
         print("Right mouse button pressed!")
     elif button == glfw.MOUSE_BUTTON_RIGHT and action == glfw.RELEASE:
@@ -89,7 +88,6 @@ while not glfw.window_should_close(window):
     glClear(GL_COLOR_BUFFER_BIT)
     
     if(flag[0]==1):
-            print("Made it")
             x,y = glfw.get_cursor_pos(window)
             x,y = normalize(x,y)
             move(x,y, flag[1])
@@ -99,7 +97,7 @@ while not glfw.window_should_close(window):
         yloc = y_nums[i]
         sides = 32
         pi=3.14
-        radius = 1/50
+        radius = 1/25
         glBegin(GL_POLYGON)
         glColor3f(0.807, 0.0, 0.0)
         for i in range(100):
