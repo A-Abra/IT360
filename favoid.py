@@ -31,10 +31,10 @@ def key_callback(window, key, scancode, action, mods):
             print("B key pressed!")
 
 def calculate_avoidance_force(x1, y1, x2, y2):
-    max_avoidance_distance = 0.1  # Adjust this value to control avoidance behavior
+    max_avoidance_distance = 0.1
     discDistance = distance(x1, y1, x2, y2)
     if discDistance < max_avoidance_distance:
-        # Calculate the avoidance force vector
+        # calculate avoidance force
         force_x = (x1 - x2) / discDistance
         force_y = (y1 - y2) / discDistance
         return (force_x, force_y)
@@ -45,7 +45,7 @@ def calculate_avoidance_force(x1, y1, x2, y2):
 if not glfw.init():
     exit()
 # Create a windowed mode window and its OpenGL context
-window = glfw.create_window(1000, 1000, "Many Circles", None, None)
+window = glfw.create_window(1000, 1000, "Crowd Avoid", None, None)
 if not window:
     glfw.terminate()
     exit()
@@ -69,6 +69,8 @@ for i in range(50):
     yCircleDirection = -0.001 + 0.002 * random.random()
     velocityX.append(xCircleDirection)
     velocityY.append(yCircleDirection)
+
+TIME_STEP = 0.01
 
 while not glfw.window_should_close(window):
     width, height = glfw.get_window_size(window)
@@ -108,6 +110,11 @@ while not glfw.window_should_close(window):
                 force_x, force_y = calculate_avoidance_force(xCoordinates[i], yCoordinates[i], xCoordinates[j], yCoordinates[j])
                 avoidance_force_x += force_x
                 avoidance_force_y += force_y
+        # update velocity/position for avoidance forces
+        velocityX[i] += avoidance_force_x * 0.00001
+        velocityY[i] += avoidance_force_y * 0.00001
+        xCoordinates[i] += velocityX[i] * TIME_STEP
+        yCoordinates[i] += velocityY[i] * TIME_STEP
 
         avoidForces.append((avoidance_force_x, avoidance_force_y))
     
@@ -117,11 +124,7 @@ while not glfw.window_should_close(window):
         locationY = yCoordinates[i]
         avoidance_force_x, avoidance_force_y = avoidForces[i]
 
-        # Update velocity based on avoidance forces
-        velocityX[i] += avoidance_force_x * 0.0005  # Adjust the factor as needed
-        velocityY[i] += avoidance_force_y * 0.0005
-
-        radius = 0.047
+        radius = 0.027
 
         glBegin(GL_POLYGON)
         glColor3f(0.807, 0.0, 0.0)
