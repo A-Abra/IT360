@@ -118,11 +118,16 @@ def distance(x1, y1, x2, y2):
     return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
 
 
-def point_constraint(particle1, x2, y2):
-    correction_x1 = 0.0
-    correction_y1 = 0.0
-    # TODO: complete this code
-    return (correction_x1, correction_y1)
+def point_constraint(particle, x, y):
+    correction_x = 0.0
+    correction_y = 0.0
+
+    # First particle fix it at the center coordinates
+    if particle == particles[0]:
+        correction_x = x - particle.x
+        correction_y = y - particle.y
+
+    return (correction_x, correction_y)
 
 
 def pbd_main_loop():
@@ -154,7 +159,7 @@ def pbd_main_loop():
         # line 14
         particle.x = particle.px
         particle.y = particle.py
-    glutPostRedisplay()
+    
 
 
 def display():
