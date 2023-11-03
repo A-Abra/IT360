@@ -118,15 +118,30 @@ def point_constraint(particle1, x2, y2):
 	return (correction_x1,correction_y1)
 
 
-def collision_constraint(particle1,
-                         particle2):
-	correction_x1 = 0.0
-	correction_y1 = 0.0
-	correction_x2 = 0.0
-	correction_y2 = 0.0
-	# TODO: complete this code
-	return (correction_x1,correction_y1,
-	        correction_x2,correction_y2)
+def collision_constraint(particle1, particle2):
+    correction_x1 = 0.0
+    correction_y1 = 0.0
+    correction_x2 = 0.0
+    correction_y2 = 0.0
+    
+    # Determine distance between the particles
+    dist = distance(particle1.x, particle1.y, particle2.x, particle2.y)
+    min_dist = particle1.r + particle2.r  # Sum of radii
+    
+    if dist < min_dist:
+        depth = min_dist - dist
+        
+        # Calculate the ratio of movement for each particle to resolve collision
+        ratio = depth / dist if dist > 0 else 0
+        
+        # Tried using correction to control how particles were pushed when
+		# affected by dragged particle
+        correction_x1 = 0.1 * ratio * (particle2.x - particle1.x)
+        correction_y1 = 0.1 * ratio * (particle2.y - particle1.y)
+        correction_x2 = -0.1 * ratio * (particle2.x - particle1.x)
+        correction_y2 = -0.1 * ratio * (particle2.y - particle1.y)
+    
+    return (correction_x1, correction_y1, correction_x2, correction_y2)
 
 def resolve_collision_constraints():
 	for p1 in particles:
@@ -160,7 +175,7 @@ def pbd_main_loop():
         # line 14
 		particle.x = particle.px
 		particle.y = particle.py
-	glutPostRedisplay()
+	
 
 def display():
    glClear (GL_COLOR_BUFFER_BIT)
