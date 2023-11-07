@@ -132,14 +132,14 @@ def collision_constraint(particle1, particle2):
         depth = min_dist - dist
         
         # Calculate the ratio of movement for each particle to resolve collision
-        ratio = depth / dist if dist > 0 else 0
+        ratio = depth / dist if dist > 0 else 0.1
         
         # Tried using correction to control how particles were pushed when
 		# affected by dragged particle
-        correction_x1 = 0.1 * ratio * (particle2.x - particle1.x)
-        correction_y1 = 0.1 * ratio * (particle2.y - particle1.y)
-        correction_x2 = -0.1 * ratio * (particle2.x - particle1.x)
-        correction_y2 = -0.1 * ratio * (particle2.y - particle1.y)
+        correction_x1 = -0.2 * ratio * (particle2.x - particle1.x)
+        correction_y1 = -0.2 * ratio * (particle2.y - particle1.y)
+        correction_x2 = 0.2 * ratio * (particle2.x - particle1.x)
+        correction_y2 = 0.2 * ratio * (particle2.y - particle1.y)
     
     return (correction_x1, correction_y1, correction_x2, correction_y2)
 
