@@ -130,20 +130,19 @@ def distance_constraint(particle1, particle2, constraint_distance):
     x1, y1 = particle1.x, particle1.y
     x2, y2 = particle2.x, particle2.y
 
-    # Calculate the current distance between the particles
     current_distance = distance(x1, y1, x2, y2)
 
-    # Calculate the difference between the current distance and the constraint distance
+    # Calculate difference between the current distance and the constraint distance
     diff = current_distance - constraint_distance
 
     # Calculate the ratio of movement for each particle to maintain the constraint distance
     ratio = diff / current_distance if current_distance > 0 else 0
 
-    # Calculate the correction to move particles along the line connecting them
-    correction_x1 = 0.5 * ratio * (x2 - x1)
-    correction_y1 = 0.5 * ratio * (y2 - y1)
-    correction_x2 = -0.5 * ratio * (x2 - x1)
-    correction_y2 = -0.5 * ratio * (y2 - y1)
+    fluid = 0.035
+    correction_x1 = 0.5 * ratio * (x2 - x1) - fluid * particle1.vx
+    correction_y1 = 0.5 * ratio * (y2 - y1) - fluid * particle1.vy
+    correction_x2 = -0.5 * ratio * (x2 - x1) - fluid * particle2.vx
+    correction_y2 = -0.5 * ratio * (y2 - y1) - fluid * particle2.vy
 
     return (correction_x1, correction_y1, correction_x2, correction_y2)
 
