@@ -32,7 +32,8 @@ screen_bottomy = 15
 screen_world_width = screen_rightx-screen_leftx
 screen_world_height = screen_bottomy-screen_topy
 
-time_delta = 1 / 64.
+# Use this for how slow rope is
+time_delta = 1 / 384.
 particle_radii = 0.3
 Fextx = -0.05
 last_time=0.0
@@ -177,21 +178,26 @@ def distance(x1, y1, x2, y2):
 
 
 def point_constraint(particle1, x2, y2):
-    correction_x1 = 0.0
-    correction_y1 = 0.0
+    correction_x1 = x2 - particle1.px
+    correction_y1 = y2 - particle1.py
     #TODO: Complete this code
     return (correction_x1, correction_y1)
 
 
-def distance_constraint(particle1,
-                        particle2,
-                        constraint_distance):
-    correction_x1 = 0.0
-    correction_y1 = 0.0
-    correction_x2 = 0.0
-    correction_y2 = 0.0
-    # TODO: complete this code
-    return (correction_x1, correction_y1,
+def distance_constraint(particle1, particle2, constraint_distance):
+    dx = particle2.px - particle1.px
+    dy = particle2.py - particle1.py
+    # Calculate current distance
+    distanceCurr = sqrt(dx*dx + dy*dy)
+    # correctionConstant to allow linking nodes to follow with
+    # spacing between nodes
+    correctConstant = (distanceCurr - constraint_distance) / distanceCurr
+
+    correction_x1 = 1.0 * dx * correctConstant
+    correction_y1 = 1.0 * dy * correctConstant
+    correction_x2 = -1.0 * dx * correctConstant
+    correction_y2 = -1.0 * dy * correctConstant
+    return (correction_x1, correction_y1, 
             correction_x2, correction_y2)
 
 
